@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RESPAWN — Севастополь</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --red:    #e8001e;
+  --red2:   #ff3346;
+  --pur:    #7b1fff;
+  --pur2:   #a855f7;
+  --pink:   #f472b6;
+  --pink2:  #ec4899;
+  --main:   #9333ea;
+  --main2:  #a855f7;
+  --warm:   #ffd580;
+  --bg:     #0a0810;
+  --bg2:    #110e1a;
+  --bg3:    #15111f;
+  --brick:  #1a1525;
+  --text:   #ddd8f0;
+  --muted:  #6b6480;
+  --border: rgba(147,51,234,0.2);
+  --gR: 0 0 24px rgba(232,0,30,0.55), 0 0 60px rgba(232,0,30,0.2);
+  --gP: 0 0 24px rgba(147,51,234,0.6), 0 0 60px rgba(147,51,234,0.25);
+  --gPk: 0 0 24px rgba(244,114,182,0.5), 0 0 60px rgba(244,114,182,0.2);
+  --gW: 0 0 24px rgba(255,213,128,0.45), 0 0 60px rgba(255,213,128,0.15);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  overflow-x: hidden;
+  min-height: 100dvh;
+}
+
+/* SCANLINES */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px);
+  pointer-events:none; z-index:900;
+}
+
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:800;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 20px;
+  height:56px;
+  background: linear-gradient(180deg,rgba(10,8,16,0.97) 0%,transparent 100%);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.nav-logo {
+  font-family:'Orbitron',monospace;
+  font-weight:900; font-size:18px; letter-spacing:5px;
+  color: var(--main2); text-shadow: var(--gP);
+  text-decoration:none;
+}
+.nav-links { display:flex; gap:28px; list-style:none; }
+.nav-links a {
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--muted); text-decoration:none;
+  transition:color .25s, text-shadow .25s;
+}
+.nav-links a:hover { color:var(--main2); text-shadow:var(--gP); }
+.nav-btn {
+  font-family:'Orbitron',monospace;
+  font-size:10px; font-weight:700; letter-spacing:2px;
+  color:#fff; background:var(--main);
+  border:none; padding:10px 20px;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  text-decoration:none;
+  white-space:nowrap;
+  transition:background .25s, transform .2s;
+  box-shadow: var(--gP);
+}
+.nav-btn:hover { background:var(--main2); transform:translateY(-1px); }
+
+/* HERO */
+.hero {
+  min-height:100dvh;
+  display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+  padding:80px 20px 60px;
+}
+.hero-glow {
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 60%, rgba(147,51,234,0.12) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 15% 85%, rgba(244,114,182,0.07) 0%,transparent 65%),
+    radial-gradient(ellipse 35% 30% at 85% 15%, rgba(232,0,30,0.05) 0%,transparent 60%);
+}
+.hero-grid {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(147,51,234,0.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(147,51,234,0.06) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse at center,black 20%,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse at center,black 20%,transparent 75%);
+}
+.hero-content {
+  position:relative; z-index:2;
+  text-align:center;
+  width:100%;
+  max-width:min(700px, 100%);
+  padding:0;
+}
+.hero-tag {
+  display:inline-block;
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px; letter-spacing:5px; text-transform:uppercase;
+  color:var(--main2); margin-bottom:28px;
+  opacity:0; animation:fadeUp .7s .2s ease forwards;
+}
+.hero-name {
+  font-family:'Orbitron',monospace;
+  font-weight:900;
+  font-size: clamp(38px, 16vw, 140px);
+  line-height:.9;
+  letter-spacing:-1px;
+  margin-bottom:8px;
+  color:#fff;
+  opacity:0; animation:fadeUp .7s .4s ease forwards;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  white-space: nowrap;
+}
+.hero-name span {
+  color:transparent;
+  -webkit-text-stroke: 2px var(--main2);
+  filter:drop-shadow(0 0 20px var(--main));
+}
+.hero-tagline {
+  font-family:'Share Tech Mono',monospace;
+  font-size:clamp(9px,2.5vw,13px);
+  letter-spacing:clamp(2px,1vw,4px); text-transform:uppercase;
+  color:var(--muted); margin-bottom:48px;
+  opacity:0; animation:fadeUp .7s .6s ease forwards;
+}
+.hero-tagline em { color:var(--pink); font-style:normal; }
+.hero-cta {
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap:8px;
+  width:100%;
+  opacity:0; animation:fadeUp .7s .8s ease forwards;
+}
+.hero-cta .btn-app,
+.hero-cta .btn-main {
+  text-align:center;
+  width:100%;
+  padding:14px 8px;
+  white-space:nowrap;
+  overflow:hidden;
+  min-width:0;
+}
+.btn-app {
+  font-family:'Orbitron',monospace;
+  font-size:10px; font-weight:700; letter-spacing:1px;
+  color:var(--main2);
+  border:1px solid rgba(147,51,234,0.5);
+  background: rgba(147,51,234,0.1);
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  text-decoration:none; display:block;
+  transition:all .25s; cursor:pointer;
+}
+.btn-app:hover { background:rgba(147,51,234,0.25); color:#fff; transform:translateY(-2px); box-shadow:var(--gP); }
+.btn-main {
+  font-family:'Orbitron',monospace;
+  font-size:10px; font-weight:700; letter-spacing:1px;
+  color:#fff; background:var(--main);
+  border:none;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  text-decoration:none; display:block;
+  transition:all .25s; cursor:pointer;
+}
+.btn-main:hover { background:var(--main2); transform:translateY(-2px); box-shadow:var(--gP); }
+.btn-ghost {
+  font-family:'Share Tech Mono',monospace;
+  font-size:11px; letter-spacing:3px;
+  color:var(--muted); text-decoration:none;
+  border:1px solid rgba(255,255,255,0.12);
+  padding:16px 28px; display:inline-block;
+  transition:all .25s;
+}
+.btn-ghost:hover { color:#fff; border-color:rgba(147,51,234,0.5); }
+
+/* TICKER */
+.ticker {
+  background: linear-gradient(90deg, var(--main), var(--pink2), var(--main));
+  background-size: 200% 100%;
+  animation: tickerBg 4s ease infinite;
+  padding:11px 0; overflow:hidden;
+}
+@keyframes tickerBg {
+  0%,100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.ticker-track {
+  display:inline-flex; white-space:nowrap;
+  animation:slide 22s linear infinite;
+}
+.ticker-item {
+  font-family:'Orbitron',monospace;
+  font-size:10px; font-weight:700; letter-spacing:4px;
+  color:#fff; padding:0 32px; text-transform:uppercase;
+}
+.ticker-sep { color:rgba(255,255,255,0.4); }
+
+/* STATS BAR */
+.stats {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+.stat {
+  padding:32px 16px; text-align:center;
+  border-right:1px solid var(--border);
+}
+.stat:last-child { border-right:none; }
+.stat-n {
+  font-family:'Orbitron',monospace;
+  font-size:clamp(28px,6vw,48px); font-weight:900;
+  color:var(--main2); text-shadow:var(--gP); line-height:1;
+  margin-bottom:6px;
+}
+.stat-l {
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--muted);
+}
+
+/* SECTION SHELL */
+.sec { padding:72px 20px; max-width:1200px; margin:0 auto; }
+.sec-full { padding:72px 0; }
+.sec-full .sec-inner { max-width:1200px; margin:0 auto; padding:0 20px; }
+
+.sec-label {
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px; letter-spacing:5px; color:var(--pink);
+  text-transform:uppercase; margin-bottom:12px;
+  display:flex; align-items:center; gap:12px;
+}
+.sec-label::after {
+  content:''; flex:1; height:1px;
+  background:linear-gradient(90deg,var(--pink),transparent);
+  max-width:100px;
+}
+.sec-title {
+  font-family:'Orbitron',monospace;
+  font-size:clamp(28px,7vw,56px); font-weight:900;
+  color:#fff; line-height:1; margin-bottom:48px;
+}
+.sec-title .accent-r { color:var(--red); text-shadow:var(--gR); }
+.sec-title .accent-p { color:var(--main2); text-shadow:var(--gP); }
+
+/* SPECS */
+.specs-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2px;
+}
+.spec-card {
+  background:var(--bg2);
+  border:1px solid var(--border);
+  padding:40px 32px; position:relative;
+  overflow:hidden; transition:border-color .3s;
+}
+.spec-card:hover { border-color:rgba(147,51,234,0.5); }
+.spec-card.gold { border-color:rgba(244,114,182,0.2); }
+.spec-card.gold:hover { border-color:rgba(244,114,182,0.5); }
+
+.spec-card::after {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(147,51,234,0.06),transparent);
+  pointer-events:none;
+}
+.spec-card.gold::after {
+  background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(244,114,182,0.06),transparent);
+}
+.spec-zone {
+  font-family:'Share Tech Mono',monospace;
+  font-size:9px; letter-spacing:4px; text-transform:uppercase;
+  color:var(--main2); margin-bottom:6px;
+}
+.spec-card.gold .spec-zone { color:var(--pink); }
+.spec-name {
+  font-family:'Orbitron',monospace;
+  font-size:clamp(18px,4vw,26px); font-weight:900;
+  color:#fff; margin-bottom:28px;
+}
+.spec-card.gold .spec-name { color:var(--pink); text-shadow:var(--gPk); }
+.spec-rows { list-style:none; }
+.spec-rows li {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+  font-size:15px;
+}
+.spec-rows li:last-child { border-bottom:none; }
+.spec-rows .k { color:var(--muted); font-weight:300; font-size:14px; }
+.spec-rows .v {
+  font-family:'Share Tech Mono',monospace;
+  font-size:12px; color:var(--text);
+}
+.spec-rows .v-hi { color:var(--pink); }
+.spec-big {
+  position:absolute; bottom:28px; right:28px;
+  font-family:'Orbitron',monospace; font-size:72px; font-weight:900;
+  color:rgba(147,51,234,0.06); line-height:1; pointer-events:none;
+}
+.spec-card.gold .spec-big { color:rgba(244,114,182,0.06); }
+
+/* PRICING */
+.pricing-bg { background:var(--bg2); }
+.pricing-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.price-card {
+  border:1px solid var(--border);
+  overflow:hidden; transition:transform .3s, box-shadow .3s;
+}
+.price-card:hover { transform:translateY(-3px); }
+.price-card.std:hover { box-shadow:var(--gP); border-color:var(--main2); }
+.price-card.com:hover { box-shadow:var(--gPk); border-color:var(--pink); }
+.price-head {
+  padding:28px 28px 24px;
+  display:flex; justify-content:space-between; align-items:flex-end;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.price-card.std .price-head { background:linear-gradient(135deg,rgba(147,51,234,0.1),transparent 60%); }
+.price-card.com .price-head { background:linear-gradient(135deg,rgba(244,114,182,0.1),transparent 60%); }
+.price-zone {
+  font-family:'Orbitron',monospace;
+  font-size:clamp(14px,3vw,20px); font-weight:900;
+}
+.price-card.std .price-zone { color:var(--main2); text-shadow:var(--gP); }
+.price-card.com .price-zone { color:var(--pink); text-shadow:var(--gPk); }
+.price-sub { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--muted); margin-top:4px; }
+.price-from { text-align:right; }
+.price-from-lbl { font-family:'Share Tech Mono',monospace; font-size:8px; letter-spacing:3px; color:var(--muted); display:block; }
+.price-from-val { font-family:'Orbitron',monospace; font-size:clamp(24px,5vw,36px); font-weight:900; color:#fff; }
+.price-body { padding:8px 28px 28px; }
+.price-cols {
+  display:grid; grid-template-columns:1fr 72px 72px;
+  gap:4px; padding:8px 0 4px;
+}
+.price-col-h { font-family:'Share Tech Mono',monospace; font-size:8px; letter-spacing:3px; color:var(--muted); text-align:center; }
+.price-row {
+  display:grid; grid-template-columns:1fr 72px 72px;
+  gap:4px; align-items:center;
+  padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04);
+  font-size:14px;
+}
+.price-row:last-child { border-bottom:none; }
+.price-row .lbl { color:var(--muted); font-weight:300; font-size:13px; }
+.price-row .v { font-family:'Share Tech Mono',monospace; font-size:12px; color:var(--text); text-align:center; }
+.price-row .v-hi-r { color:var(--main2); }
+.price-row .v-hi-p { color:var(--pink); }
+
+/* GAMES */
+.games-belt { overflow:hidden; margin:0 -20px; }
+.games-track {
+  display:inline-flex; gap:10px; white-space:nowrap;
+  animation:slide 28s linear infinite;
+}
+.g-pill {
+  font-family:'Rajdhani',sans-serif;
+  font-size:13px; font-weight:600; letter-spacing:2px;
+  color:var(--muted); text-transform:uppercase;
+  border:1px solid rgba(255,255,255,0.07);
+  padding:9px 20px; flex-shrink:0;
+  clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+  background:rgba(255,255,255,0.02);
+  transition:all .25s;
+}
+.g-pill.hi { color:var(--main2); border-color:rgba(147,51,234,0.35); background:rgba(147,51,234,0.07); }
+.g-pill.hip { color:var(--pink); border-color:rgba(244,114,182,0.35); background:rgba(244,114,182,0.07); }
+.games-note {
+  font-family:'Share Tech Mono',monospace;
+  font-size:10px; letter-spacing:3px; color:var(--muted);
+  margin-top:20px; text-align:center;
+}
+
+/* PROMOS */
+.promos-bg { background:var(--bg3); }
+.promos-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
+.promo-card {
+  background:var(--bg2); padding:40px 32px;
+  border:1px solid rgba(255,255,255,0.05);
+  position:relative; overflow:hidden;
+  transition:border-color .3s;
+}
+.promo-card:hover { border-color:rgba(147,51,234,0.4); }
+.promo-icon { font-size:36px; display:block; margin-bottom:20px; }
+.promo-code {
+  font-family:'Orbitron',monospace; font-size:22px; font-weight:900;
+  color:var(--main2); text-shadow:var(--gP);
+  letter-spacing:4px; margin-bottom:6px;
+}
+.promo-reward {
+  font-family:'Share Tech Mono',monospace; font-size:12px;
+  color:var(--pink); letter-spacing:2px; margin-bottom:14px;
+}
+.promo-desc { font-size:14px; color:var(--muted); font-weight:300; line-height:1.65; }
+
+/* CONTACTS */
+.contacts-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start; }
+.open-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(0,255,100,0.07); border:1px solid rgba(0,255,100,0.2);
+  padding:8px 18px; margin-bottom:36px;
+  clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+}
+.open-dot { width:6px; height:6px; background:#00ff64; border-radius:50%; animation:pulse 1.5s ease infinite; box-shadow:0 0 8px #00ff64; }
+.open-txt { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:3px; color:var(--text); }
+.c-item { display:flex; gap:20px; align-items:flex-start; padding:24px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+.c-num { font-family:'Orbitron',monospace; font-size:10px; color:var(--main2); opacity:.6; min-width:20px; margin-top:2px; }
+.c-lbl { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:4px; color:var(--muted); margin-bottom:6px; text-transform:uppercase; }
+.c-val { font-size:clamp(16px,3vw,20px); font-weight:600; color:#fff; text-decoration:none; transition:color .25s; }
+.c-val:hover { color:var(--main2); }
+.c-note { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:2px; color:var(--muted); margin-top:4px; }
+.map-box {
+  background:var(--bg2); border:1px solid var(--border);
+  height:280px; display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.map-grid-bg {
+  position:absolute; inset:0;
+  background-image:linear-gradient(rgba(147,51,234,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(147,51,234,0.07) 1px,transparent 1px);
+  background-size:36px 36px;
+}
+.map-pin-inner { position:relative; z-index:2; text-align:center; }
+.pin-dot { width:14px; height:14px; background:var(--main2); border-radius:50%; margin:0 auto 14px; box-shadow:var(--gP); animation:pulse 2s ease infinite; }
+.pin-txt { font-family:'Share Tech Mono',monospace; font-size:10px; letter-spacing:3px; color:var(--text); line-height:1.8; }
+.btn-block {
+  display:block; margin-top:16px; text-align:center;
+  font-family:'Orbitron',monospace; font-size:11px; font-weight:700; letter-spacing:2px;
+  color:#fff; background:var(--main); text-decoration:none;
+  padding:16px; transition:all .25s;
+  clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);
+}
+.btn-block:hover { background:var(--main2); box-shadow:var(--gP); }
+
+/* FOOTER */
+footer {
+  border-top:1px solid var(--border);
+  padding:32px 20px;
+  display:flex; gap:16px;
+  justify-content:space-between; align-items:center;
+  flex-wrap:wrap;
+  max-width:1200px; margin:0 auto;
+}
+.f-logo { font-family:'Orbitron',monospace; font-weight:900; font-size:16px; letter-spacing:5px; color:var(--main2); text-shadow:var(--gP); }
+.f-copy { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--muted); }
+.f-links { display:flex; gap:20px; }
+.f-links a { font-family:'Share Tech Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--muted); text-decoration:none; transition:color .25s; }
+.f-links a:hover { color:var(--main2); }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(32px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slide  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+@keyframes pulse  { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:.6} }
+
+.rev { opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease; }
+.rev.on { opacity:1; transform:translateY(0); }
+
+/* MOBILE */
+@media (max-width: 640px) {
+  nav { padding:0 16px; }
+  .nav-links { display:none; }
+
+  .hero { padding:72px 16px 48px; }
+  .hero-content { max-width:100%; overflow:hidden; }
+  .hero-name {
+    font-size: clamp(36px, 15vw, 80px);
+    white-space: nowrap;
+    overflow: visible;
+    letter-spacing: -2px;
+  }
+  .hero-cta { grid-template-columns: 1fr; gap:10px; }
+  .hero-cta .btn-app,
+  .hero-cta .btn-main { padding:16px 20px; }
+
+  .stats { grid-template-columns:1fr 1fr; }
+  .stat { border-right:none; border-bottom:1px solid var(--border); padding:24px 12px; }
+  .stat:nth-child(odd) { border-right:1px solid var(--border); }
+  .stat:nth-last-child(-n+2) { border-bottom:none; }
+
+  .sec { padding:56px 16px; }
+  .sec-full .sec-inner { padding:0 16px; }
+  .sec-title { margin-bottom:32px; }
+
+  .specs-grid { grid-template-columns:1fr; gap:12px; }
+  .spec-card { padding:28px 20px; }
+  .spec-big { font-size:52px; }
+
+  .pricing-grid { grid-template-columns:1fr; gap:16px; }
+  .price-head { padding:20px 20px 16px; }
+  .price-body { padding:6px 20px 20px; }
+  .price-cols { grid-template-columns:1fr 64px 64px; }
+  .price-row { grid-template-columns:1fr 64px 64px; }
+
+  .promos-grid { grid-template-columns:1fr; gap:12px; }
+  .promo-card { padding:28px 20px; }
+
+  .contacts-grid { grid-template-columns:1fr; gap:32px; }
+  .map-box { height:220px; }
+
+  footer { flex-direction:column; gap:12px; text-align:center; }
+  .f-links { justify-content:center; }
+
+  .games-belt { margin:0 -16px; }
+}
+
+@media (max-width: 380px) {
+  .hero-name {
+    font-size: clamp(30px, 13vw, 60px);
+    letter-spacing: -3px;
+  }
+}
+
+@media (min-width:641px) and (max-width:900px) {
+  .promos-grid { grid-template-columns:1fr 1fr; }
+  .promos-grid .promo-card:last-child { grid-column:1/-1; }
+  .contacts-grid { grid-template-columns:1fr; gap:32px; }
+}
+
+/* ── GALLERY ── */
+.gallery-bg { background: var(--bg3); }
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 320px 220px;
+  gap: 3px;
+}
+.g-item {
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+.g-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease, filter .4s ease;
+  filter: brightness(0.82) saturate(0.9);
+}
+.g-item:hover img {
+  transform: scale(1.06);
+  filter: brightness(1) saturate(1.1);
+}
+.g-item::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(10,8,16,0.7) 100%);
+  pointer-events: none;
+  transition: opacity .3s;
+}
+.g-item:hover::after { opacity: 0; }
+
+/* layout */
+.g-item:nth-child(1) { grid-column: 1 / 6; grid-row: 1; }
+.g-item:nth-child(2) { grid-column: 6 / 9; grid-row: 1; }
+.g-item:nth-child(3) { grid-column: 9 / 13; grid-row: 1; }
+.g-item:nth-child(4) { grid-column: 1 / 5; grid-row: 2; }
+.g-item:nth-child(5) { grid-column: 5 / 9; grid-row: 2; }
+.g-item:nth-child(6) { grid-column: 9 / 11; grid-row: 2; }
+.g-item:nth-child(7) { grid-column: 11 / 13; grid-row: 2; }
+
+/* glow border on hover */
+.g-item:nth-child(odd):hover { box-shadow: inset 0 0 0 2px rgba(147,51,234,0.6); }
+.g-item:nth-child(even):hover { box-shadow: inset 0 0 0 2px rgba(244,114,182,0.6); }
+
+/* lightbox */
+.lightbox {
+  display: none;
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(5,4,10,0.96);
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.lightbox.open { display: flex; }
+.lightbox img {
+  max-width: 90vw; max-height: 88vh;
+  object-fit: contain;
+  border: 1px solid rgba(147,51,234,0.3);
+  box-shadow: 0 0 60px rgba(147,51,234,0.2);
+}
+.lightbox-close {
+  position: absolute; top: 20px; right: 24px;
+  font-family: 'Orbitron', monospace;
+  font-size: 22px; color: var(--muted);
+  cursor: pointer; background: none; border: none;
+  transition: color .2s;
+}
+.lightbox-close:hover { color: var(--main2); }
+.lightbox-prev, .lightbox-next {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  font-family: 'Orbitron', monospace;
+  font-size: 28px; color: var(--muted);
+  cursor: pointer; background: none; border: none;
+  transition: color .2s; padding: 16px;
+}
+.lightbox-prev { left: 12px; }
+.lightbox-next { right: 12px; }
+.lightbox-prev:hover, .lightbox-next:hover { color: var(--main2); }
+
+@media (max-width: 640px) {
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(4, 180px);
+  }
+  .g-item:nth-child(1) { grid-column: 1 / 3; grid-row: 1; }
+  .g-item:nth-child(2) { grid-column: 1 / 2; grid-row: 2; }
+  .g-item:nth-child(3) { grid-column: 2 / 3; grid-row: 2; }
+  .g-item:nth-child(4) { grid-column: 1 / 2; grid-row: 3; }
+  .g-item:nth-child(5) { grid-column: 2 / 3; grid-row: 3; }
+  .g-item:nth-child(6) { grid-column: 1 / 2; grid-row: 4; }
+  .g-item:nth-child(7) { grid-column: 2 / 3; grid-row: 4; }
+}
+
+/* ── APP DOWNLOAD ── */
+.app-download {
+  display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px;
+}
+.app-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text); text-decoration: none;
+  border: 1px solid rgba(147,51,234,0.3);
+  padding: 12px 18px;
+  background: rgba(147,51,234,0.07);
+  transition: all .25s;
+  clip-path: polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+}
+.app-btn:hover {
+  border-color: var(--main2);
+  background: rgba(147,51,234,0.15);
+  color: #fff;
+}
+.app-btn-icon { font-size: 16px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">RESPAWN</a>
+  <ul class="nav-links">
+    <li><a href="#specs">Железо</a></li>
+    <li><a href="#prices">Тарифы</a></li>
+    <li><a href="#gallery">Фото</a></li>
+    <li><a href="#games">Игры</a></li>
+    <li><a href="#promos">Акции</a></li>
+    <li><a href="#contacts">Контакты</a></li>
+  </ul>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <a class="nav-btn" style="background:transparent;border:1px solid rgba(147,51,234,0.5);color:var(--main2);" href="https://gamer.smartshell.gg/clubs/9789?from=home" target="_blank">ПРИЛОЖЕНИЕ</a>
+    <a class="nav-btn" href="https://gamer.smartshell.gg/clubs/9789?from=home" target="_blank">ЗАБРОНИРОВАТЬ</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">// Севастополь · Вакуленчука 36/3</div>
+    <h1 class="hero-name">RES<span>PAWN</span></h1>
+    <p class="hero-tagline">Топовое железо &nbsp;·&nbsp; <em>RGB атмосфера</em> &nbsp;·&nbsp; 24/7</p>
+    <div class="hero-cta">
+      <a class="btn-app" href="https://apps.apple.com/us/app/smartgamer/id6482296507" target="_blank">App Store</a>
+      <a class="btn-app" href="https://play.google.com/store/apps/details?id=com.smartgamer.app" target="_blank">Google Play</a>
+      <a class="btn-main" href="https://gamer.smartshell.gg/clubs/9789?from=home" target="_blank">Забронировать</a>
+    </div>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span class="ticker-item">RESPAWN</span><span class="ticker-item ticker-sep">·</span>
+    <span class="ticker-item">RTX 5070</span><span class="ticker-item ticker-sep">·</span>
+    <span class="ticker-item">200Hz МОНИТОРЫ</span><span class="ticker-item ticker-sep">·</span>
+    <span class="ticker-item">21 ИГРОВЫХ ПК</span><span class="ticker-item ticker-sep">·</span>
+    <span class="ticker-item">24/7</span><span class="ticker-item ticker-sep">·</span>
+    <span class="ticker-item">ПРОМОКОД TRIAL — 300₽</span><span class="ticker-item ticker-sep">·</span>
+    <span class="ticker-item">СЕВАСТОПОЛЬ</span><span class="ticker-item ticker-sep">·</span>
+    <span class="ticker-item">RESPAWN</span><span class="ticker-item ticker-sep">·</span>
+    <span class="ticker-item">RTX 5070</span><span class="ticker-item ticker-sep">·</span>
+    <span class="ticker-item">200Hz МОНИТОРЫ</span><span class="ticker-item ticker-sep">·</span>
+    <span class="ticker-item">21 ИГРОВЫХ ПК</span><span class="ticker-item ticker-sep">·</span>
+    <span class="ticker-item">24/7</span><span class="ticker-item ticker-sep">·</span>
+    <span class="ticker-item">ПРОМОКОД TRIAL — 300₽</span><span class="ticker-item ticker-sep">·</span>
+    <span class="ticker-item">СЕВАСТОПОЛЬ</span><span class="ticker-item ticker-sep">·</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats rev">
+  <div class="stat"><div class="stat-n">21</div><div class="stat-l">Игровых ПК</div></div>
+  <div class="stat"><div class="stat-n">27"</div><div class="stat-l">200Hz</div></div>
+  <div class="stat"><div class="stat-n">24/7</div><div class="stat-l">Без выходных</div></div>
+  <div class="stat"><div class="stat-n">30+</div><div class="stat-l">Игр</div></div>
+</div>
+
+<!-- SPECS -->
+<div class="sec" id="specs">
+  <div class="sec-label">// конфигурации</div>
+  <h2 class="sec-title rev">ЖЕЛЕЗО<br><span class="accent-p">КЛУБА</span></h2>
+  <div class="specs-grid rev">
+    <div class="spec-card">
+      <div class="spec-zone">Зал 01 · 14 мест</div>
+      <div class="spec-name">СТАНДАРТ</div>
+      <ul class="spec-rows">
+        <li><span class="k">Видеокарта</span><span class="v">RTX 5060 8GB</span></li>
+        <li><span class="k">Процессор</span><span class="v">i5-13400f</span></li>
+        <li><span class="k">Монитор</span><span class="v">27" 200Hz</span></li>
+        <li><span class="k">Мышь</span><span class="v">Ajazz PAW3395</span></li>
+        <li><span class="k">Клавиатура</span><span class="v">Ajazz магн.</span></li>
+        <li><span class="k">Наушники</span><span class="v">Logitech G435</span></li>
+        <li><span class="k">Кресло</span><span class="v">Knight Nitro</span></li>
+      </ul>
+      <div class="spec-big">14</div>
+    </div>
+    <div class="spec-card gold">
+      <div class="spec-zone">Зал 02 · 7 мест</div>
+      <div class="spec-name">КОМФОРТ</div>
+      <ul class="spec-rows">
+        <li><span class="k">Видеокарта</span><span class="v v-hi">RTX 5070 12GB</span></li>
+        <li><span class="k">Процессор</span><span class="v">i5-13400f</span></li>
+        <li><span class="k">Монитор</span><span class="v">27" 200Hz</span></li>
+        <li><span class="k">Мышь</span><span class="v">Ajazz PAW3395</span></li>
+        <li><span class="k">Клавиатура</span><span class="v">Ajazz магн.</span></li>
+        <li><span class="k">Наушники</span><span class="v v-hi">Logitech G Pro X</span></li>
+        <li><span class="k">Кресло</span><span class="v">Knight Nitro</span></li>
+      </ul>
+      <div class="spec-big">07</div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICES -->
+<div class="sec-full pricing-bg" id="prices">
+  <div class="sec-inner">
+    <div class="sec-label">// тарифы</div>
+    <h2 class="sec-title rev">ЦЕНЫ</h2>
+    <div class="pricing-grid rev">
+      <div class="price-card std">
+        <div class="price-head">
+          <div>
+            <div class="price-zone">СТАНДАРТ</div>
+            <div class="price-sub">14 МЕСТ</div>
+          </div>
+          <div class="price-from">
+            <span class="price-from-lbl">ОТ</span>
+            <div class="price-from-val">135₽</div>
+          </div>
+        </div>
+        <div class="price-body">
+          <div class="price-cols">
+            <span></span>
+            <span class="price-col-h">БУДНИ</span>
+            <span class="price-col-h">ВЫХ.</span>
+          </div>
+          <div class="price-row"><span class="lbl">1 час</span><span class="v">135₽</span><span class="v">155₽</span></div>
+          <div class="price-row"><span class="lbl">2 часа</span><span class="v">260₽</span><span class="v">300₽</span></div>
+          <div class="price-row"><span class="lbl">3 часа</span><span class="v">375₽</span><span class="v">435₽</span></div>
+          <div class="price-row"><span class="lbl">4 часа</span><span class="v">480₽</span><span class="v">560₽</span></div>
+          <div class="price-row"><span class="lbl">5 часов</span><span class="v">590₽</span><span class="v">675₽</span></div>
+          <div class="price-row"><span class="lbl">7 часов</span><span class="v">700₽</span><span class="v">805₽</span></div>
+          <div class="price-row"><span class="lbl">Утро 08–14</span><span class="v">350₽</span><span class="v">400₽</span></div>
+          <div class="price-row"><span class="lbl">День 08–23</span><span class="v">1350₽</span><span class="v">1500₽</span></div>
+          <div class="price-row"><span class="lbl">Ночь 23–08</span><span class="v">600₽</span><span class="v">720₽</span></div>
+          <div class="price-row"><span class="lbl">Сутки</span><span class="v v-hi-r">1400₽</span><span class="v v-hi-r">1600₽</span></div>
+        </div>
+      </div>
+      <div class="price-card com">
+        <div class="price-head">
+          <div>
+            <div class="price-zone">КОМФОРТ</div>
+            <div class="price-sub">7 МЕСТ · RTX 5070</div>
+          </div>
+          <div class="price-from">
+            <span class="price-from-lbl">ОТ</span>
+            <div class="price-from-val" style="color:var(--pink)">155₽</div>
+          </div>
+        </div>
+        <div class="price-body">
+          <div class="price-cols">
+            <span></span>
+            <span class="price-col-h">БУДНИ</span>
+            <span class="price-col-h">ВЫХ.</span>
+          </div>
+          <div class="price-row"><span class="lbl">1 час</span><span class="v">155₽</span><span class="v">180₽</span></div>
+          <div class="price-row"><span class="lbl">2 часа</span><span class="v">300₽</span><span class="v">350₽</span></div>
+          <div class="price-row"><span class="lbl">3 часа</span><span class="v">435₽</span><span class="v">500₽</span></div>
+          <div class="price-row"><span class="lbl">4 часа</span><span class="v">560₽</span><span class="v">640₽</span></div>
+          <div class="price-row"><span class="lbl">5 часов</span><span class="v">690₽</span><span class="v">780₽</span></div>
+          <div class="price-row"><span class="lbl">7 часов</span><span class="v">945₽</span><span class="v">1070₽</span></div>
+          <div class="price-row"><span class="lbl">Утро 08–14</span><span class="v">550₽</span><span class="v">700₽</span></div>
+          <div class="price-row"><span class="lbl">День 08–23</span><span class="v">1500₽</span><span class="v">1750₽</span></div>
+          <div class="price-row"><span class="lbl">Ночь 23–08</span><span class="v">750₽</span><span class="v">880₽</span></div>
+          <div class="price-row"><span class="lbl">Сутки</span><span class="v v-hi-p">2000₽</span><span class="v v-hi-p">2500₽</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<div class="sec-full gallery-bg" id="gallery">
+  <div class="sec-inner">
+    <div class="sec-label">// атмосфера</div>
+    <h2 class="sec-title rev">КЛУБ<br><span class="accent-p">ВЖИВУЮ</span></h2>
+  </div>
+  <div class="gallery-grid rev">
+    <div class="g-item"><img src="images/photo1.jpg" alt="Вход в клуб" loading="lazy"></div>
+    <div class="g-item"><img src="images/photo2.jpg" alt="Ресепшн" loading="lazy"></div>
+    <div class="g-item"><img src="images/photo3.jpg" alt="Зал стандарт" loading="lazy"></div>
+    <div class="g-item"><img src="images/photo4.jpg" alt="Зал комфорт" loading="lazy"></div>
+    <div class="g-item"><img src="images/photo5.jpg" alt="ПК места" loading="lazy"></div>
+    <div class="g-item"><img src="images/photo6.jpg" alt="Напитки" loading="lazy"></div>
+    <div class="g-item"><img src="images/photo7.jpg" alt="Энергетики" loading="lazy"></div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-prev" onclick="lightboxNav(-1)">‹</button>
+  <img id="lightbox-img" src="" alt="">
+  <button class="lightbox-next" onclick="lightboxNav(1)">›</button>
+</div>
+
+<!-- GAMES -->
+<div class="sec" id="games">
+  <div class="sec-label">// библиотека</div>
+  <h2 class="sec-title rev">ИГРЫ</h2>
+  <div class="games-belt">
+    <div class="games-track">
+      <div class="g-pill hi">CS2</div>
+      <div class="g-pill">Dota 2</div>
+      <div class="g-pill hi">Valorant</div>
+      <div class="g-pill">Fortnite</div>
+      <div class="g-pill">GTA V</div>
+      <div class="g-pill hi">PUBG</div>
+      <div class="g-pill">Apex Legends</div>
+      <div class="g-pill hip">Rust</div>
+      <div class="g-pill">CoD Warzone</div>
+      <div class="g-pill hi">R6 Siege</div>
+      <div class="g-pill">Battlefield 2042</div>
+      <div class="g-pill">Genshin Impact</div>
+      <div class="g-pill hip">Dead by Daylight</div>
+      <div class="g-pill hi">Deadlock</div>
+      <div class="g-pill">WarThunder</div>
+      <div class="g-pill">The Finals</div>
+      <div class="g-pill">Destiny 2</div>
+      <div class="g-pill hip">Мир Танков</div>
+      <div class="g-pill">Among Us</div>
+      <div class="g-pill">R.E.P.O.</div>
+      <div class="g-pill hi">CS2</div>
+      <div class="g-pill">Dota 2</div>
+      <div class="g-pill hi">Valorant</div>
+      <div class="g-pill">Fortnite</div>
+      <div class="g-pill">GTA V</div>
+      <div class="g-pill hi">PUBG</div>
+      <div class="g-pill">Apex Legends</div>
+      <div class="g-pill hip">Rust</div>
+      <div class="g-pill">CoD Warzone</div>
+      <div class="g-pill hi">R6 Siege</div>
+      <div class="g-pill">Battlefield 2042</div>
+      <div class="g-pill">Genshin Impact</div>
+      <div class="g-pill hip">Dead by Daylight</div>
+      <div class="g-pill hi">Deadlock</div>
+      <div class="g-pill">WarThunder</div>
+      <div class="g-pill">The Finals</div>
+      <div class="g-pill">Destiny 2</div>
+      <div class="g-pill hip">Мир Танков</div>
+      <div class="g-pill">Among Us</div>
+      <div class="g-pill">R.E.P.O.</div>
+    </div>
+  </div>
+  <p class="games-note">И МНОГОЕ ДРУГОЕ — ГОТОВЫ ЗАГРУЗИТЬ ЧТО ЗАХОЧЕШЬ</p>
+</div>
+
+<!-- PROMOS -->
+<div class="sec-full promos-bg" id="promos">
+  <div class="sec-inner">
+    <div class="sec-label">// бонусы</div>
+    <h2 class="sec-title rev">АКЦИИ</h2>
+    <div class="promos-grid rev">
+      <div class="promo-card">
+        <span class="promo-icon">⚡</span>
+        <div class="promo-code">TRIAL</div>
+        <div class="promo-reward">+ 300 ₽ НА СЧЁТ</div>
+        <p class="promo-desc">Промокод для новых игроков. Один раз на человека — введи при первом посещении и получи 300 рублей на аккаунт.</p>
+      </div>
+      <div class="promo-card">
+        <span class="promo-icon">👥</span>
+        <div class="promo-code">+1</div>
+        <div class="promo-reward">+ 1 ЧАС ЗА ДРУГА</div>
+        <p class="promo-desc">Приведи друга — получи час игрового времени. Работает неограниченное количество раз.</p>
+      </div>
+      <div class="promo-card">
+        <span class="promo-icon">🌟</span>
+        <div class="promo-code">СОЦСЕТИ</div>
+        <div class="promo-reward">+50₽ ВК · +50₽ TG · 1ЧАС ЗА ОТЗЫВ</div>
+        <p class="promo-desc">Подписка ВКонтакте +50₽, Telegram +50₽. Отзыв на Яндекс Картах — 1 бесплатный час в Стандарте.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACTS -->
+<div class="sec" id="contacts">
+  <div class="sec-label">// найди нас</div>
+  <h2 class="sec-title rev">КОНТАКТЫ</h2>
+  <div class="contacts-grid rev">
+    <div>
+      <div class="open-badge">
+        <div class="open-dot"></div>
+        <span class="open-txt">ОТКРЫТО 24/7</span>
+      </div>
+      <div class="c-item">
+        <div class="c-num">01</div>
+        <div>
+          <div class="c-lbl">Телефон</div>
+          <a class="c-val" href="tel:+79780006051">+7 978 000 60 51</a>
+        </div>
+      </div>
+      <div class="c-item">
+        <div class="c-num">02</div>
+        <div>
+          <div class="c-lbl">Адрес</div>
+          <div class="c-val" style="cursor:default">ул. Вакуленчука 36/3</div>
+          <div class="c-note">ОСТ. СТУДЕНЧЕСКИЙ ГОРОДОК · КИБЕР АРЕНА RESPAWN</div>
+        </div>
+      </div>
+      <div class="c-item">
+        <div class="c-num">03</div>
+        <div>
+          <div class="c-lbl">ВКонтакте</div>
+          <a class="c-val" href="https://vk.com/sev_respawn" target="_blank">vk.com/sev_respawn</a>
+        </div>
+      </div>
+      <div class="c-item">
+        <div class="c-num">04</div>
+        <div>
+          <div class="c-lbl">Скачать приложение</div>
+          <div class="app-download">
+            <a class="app-btn" href="https://apps.apple.com/us/app/smartgamer/id6482296507" target="_blank">
+              <span class="app-btn-icon">🍎</span> App Store
+            </a>
+            <a class="app-btn" href="https://play.google.com/store/apps/details?id=com.smartgamer.app" target="_blank">
+              <span class="app-btn-icon">🤖</span> Google Play
+            </a>
+            <a class="app-btn" href="https://www.rustore.ru/catalog/app/com.smartgamer.app" target="_blank">
+              <span class="app-btn-icon">🛒</span> RuStore
+            </a>
+          </div>
+          <div class="c-note" style="margin-top:10px">ПОСЛЕ УСТАНОВКИ — НАЙДИ НАС И БРОНИРУЙ</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="map-box">
+        <div class="map-grid-bg"></div>
+        <div class="map-pin-inner">
+          <div class="pin-dot"></div>
+          <div class="pin-txt">УЛ. ВАКУЛЕНЧУКА 36/3<br>СЕВАСТОПОЛЬ</div>
+        </div>
+      </div>
+      <a class="btn-block" style="background:rgba(147,51,234,0.15);border:1px solid rgba(147,51,234,0.4);color:var(--main2);margin-top:12px;" href="https://gamer.smartshell.gg/clubs/9789?from=home" target="_blank">СКАЧАТЬ ПРИЛОЖЕНИЕ →</a>
+      <a class="btn-block" href="https://gamer.smartshell.gg/clubs/9789?from=home" target="_blank">ЗАБРОНИРОВАТЬ ЧЕРЕЗ ПРИЛОЖЕНИЕ →</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">RESPAWN</div>
+  <div class="f-copy">© 2025 RESPAWN · СЕВАСТОПОЛЬ</div>
+  <div class="f-links">
+    <a href="https://vk.com/sev_respawn" target="_blank">ВК</a>
+    <a href="tel:+79780006051">ТЕЛЕФОН</a>
+    <a href="https://gamer.smartshell.gg/clubs/9789?from=home" target="_blank">БРОНЬ</a>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(els => {
+    els.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rev').forEach(el => obs.observe(el));
+
+  // Lightbox
+  const imgs = Array.from(document.querySelectorAll('.g-item img'));
+  let curIdx = 0;
+
+  imgs.forEach((img, i) => {
+    img.parentElement.addEventListener('click', () => openLightbox(i));
+  });
+
+  function openLightbox(i) {
+    curIdx = i;
+    document.getElementById('lightbox-img').src = imgs[i].src;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function lightboxNav(dir) {
+    curIdx = (curIdx + dir + imgs.length) % imgs.length;
+    document.getElementById('lightbox-img').src = imgs[curIdx].src;
+  }
+  document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+  });
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') lightboxNav(-1);
+    if (e.key === 'ArrowRight') lightboxNav(1);
+  });
+</script>
+
+</body>
+</html>
